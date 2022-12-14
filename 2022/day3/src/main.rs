@@ -64,7 +64,6 @@ fn _part1() {
 fn part2() {
     let stdin = std::io::stdin();
     let mut sum: u32 = 0;
-    let mut counter = 0;
     let mut rucksacks: Vec<Rucksack> = Vec::with_capacity(3);
     for line in stdin.lines() {
         let line = line.unwrap();
@@ -72,12 +71,10 @@ fn part2() {
             items: line,
         };
         rucksacks.push(rucksack);
-        counter += 1;
-        if counter == 3 {
+        if rucksacks.len() == 3 {
             let common = Rucksack::find_common(&rucksacks);
             let priority = get_priority(common);
             sum += priority as u32;
-            counter = 0;
             rucksacks.retain(|_| false);
         }
     }

@@ -6,18 +6,17 @@ enum Move {
 }
 
 fn parse_move(input: &str) -> Move {
-    return match input {
+    match input {
         "A"|"X" => Move::Rock,
         "B"|"Y" => Move::Paper,
         "C"|"Z" => Move::Scissors,
         _ => panic!("Unknown input"),
     }
-
 }
 
 // Part two
 fn infer_move(elf_move: Move, input: &str) -> Move {
-    return match input {
+    match input {
         // Lose
         "X" => match elf_move {
             Move::Rock => Move::Scissors,
@@ -41,23 +40,23 @@ fn infer_move(elf_move: Move, input: &str) -> Move {
 }
 
 fn score(my_move: Move, elf_move: Move) -> u32 {
-        return my_move as u32 + match my_move {
-            Move::Rock => match elf_move {
-                Move::Rock => 3,
-                Move::Paper => 0,
-                Move::Scissors => 6,
-            },
-            Move::Paper => match elf_move {
-                Move::Rock => 6,
-                Move::Paper => 3,
-                Move::Scissors => 0,
-            },
-            Move::Scissors => match elf_move {
-                Move::Rock => 0,
-                Move::Paper => 6,
-                Move::Scissors => 3,
-            },
-        };
+    my_move as u32 + match my_move {
+        Move::Rock => match elf_move {
+            Move::Rock => 3,
+            Move::Paper => 0,
+            Move::Scissors => 6,
+        },
+        Move::Paper => match elf_move {
+            Move::Rock => 6,
+            Move::Paper => 3,
+            Move::Scissors => 0,
+        },
+        Move::Scissors => match elf_move {
+            Move::Rock => 0,
+            Move::Paper => 6,
+            Move::Scissors => 3,
+        },
+    }
 }
 
 fn main() {

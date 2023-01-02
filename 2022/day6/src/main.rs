@@ -1,5 +1,10 @@
 use std::collections::HashMap;
 
+// Part 1
+//const MARKER_LEN: usize = 4;
+// Part 2
+const MARKER_LEN: usize = 14;
+
 fn main() {
     let mut line = String::new();
     let mut set: HashMap<char, usize> = HashMap::with_capacity(4);
@@ -14,12 +19,12 @@ fn main() {
             set.insert(*c, 1);
         }
         println!("Set {:?}", set);
-        if i < 3 { continue; }
-        if set.keys().len() == 4 {
+        if i < (MARKER_LEN - 1) { continue; }
+        if set.keys().len() == MARKER_LEN {
             println!("{}", i+1);
             return;
         } else {
-            let prev = buf.get(i-3).unwrap();
+            let prev = buf.get(i-(MARKER_LEN-1)).unwrap();
             let count = set.remove(prev).unwrap();
             if count > 1 {
                 set.insert(*prev, count-1);

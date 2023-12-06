@@ -26,6 +26,12 @@ impl FromStr for Subset {
     }
 }
 
+impl Subset {
+    fn power(&self) -> u64 {
+        self.red as u64 * self.green as u64 * self.blue as u64
+    }
+}
+
 #[derive(Debug)]
 struct Game {
     id: usize,
@@ -55,15 +61,33 @@ impl Game {
         }
         true
     }
+
+    fn min_viable_set(&self) -> Subset {
+        let mut mvs = Subset {red: 0, green: 0, blue: 0};
+        for subset in &self.subsets {
+            if subset.red > mvs.red {
+                mvs.red = subset.red;
+            }
+            if subset.green > mvs.green {
+                mvs.green = subset.green;
+            }
+            if subset.blue > mvs.blue {
+                mvs.blue = subset.blue;
+            }
+        }
+        mvs
+    }
 }
 
 fn main() {
     let mut sum = 0;
+    let mut powersum = 0;
     for line in stdin().lines() {
         let game = Game::from_str(&line.unwrap()).unwrap();
         if game.is_possible(Subset {red: 12, green: 13, blue: 14}) {
             sum += game.id;
         }
+        powersum += game.min_viable_set().power();
     }
-    println!("{sum}");
+    println!("{sum} {powersum}");
 }

@@ -25,17 +25,17 @@ impl Race {
     }
 }
 
-fn extract_nums(s: &str) -> Vec<u64> {
+fn _extract_nums(s: &str) -> Vec<u64> {
     s.split_whitespace()
         .skip(1)
         .map(|s| u64::from_str_radix(s, 10).unwrap())
         .collect::<Vec<u64>>()
 }
 
-fn main() {
+fn _part1() {
     let mut lines = stdin().lines();
-    let timings = extract_nums(&lines.next().unwrap().unwrap());
-    let distances = extract_nums(&lines.next().unwrap().unwrap());
+    let timings = _extract_nums(&lines.next().unwrap().unwrap());
+    let distances = _extract_nums(&lines.next().unwrap().unwrap());
     let mut total = 1u64;
     for (time, distance) in timings.into_iter().zip(distances.into_iter()) {
         let r = Race { time, distance };
@@ -44,4 +44,27 @@ fn main() {
         total *= margin;
     }
     println!("{total}");
+}
+
+fn extract_num_with_kerning(s: &str) -> u64 {
+    u64::from_str_radix(
+        &s.split(":")
+            .skip(1)
+            .next()
+            .unwrap()
+            .split_whitespace()
+            .collect::<String>(),
+        10,
+    )
+    .unwrap()
+}
+
+fn main() {
+    let mut lines = stdin().lines();
+    let r = Race {
+        time: extract_num_with_kerning(&lines.next().unwrap().unwrap()),
+        distance: extract_num_with_kerning(&lines.next().unwrap().unwrap()),
+    };
+    let margin = r.calc_margin();
+    println!("{:?} margin {}", r, margin);
 }

@@ -43,9 +43,27 @@ impl FromStr for Game {
     }
 }
 
+impl Game {
+    /**
+     * Determine is a given game is possible given the bag was loaded with "load" subset
+     */
+    fn is_possible(&self, load: Subset) -> bool {
+        for subset in &self.subsets {
+            if subset.red > load.red || subset.green > load.green || subset.blue > load.blue {
+                return false;
+            }
+        }
+        true
+    }
+}
+
 fn main() {
+    let mut sum = 0;
     for line in stdin().lines() {
         let game = Game::from_str(&line.unwrap()).unwrap();
-        println!("{:?}", game);
+        if game.is_possible(Subset {red: 12, green: 13, blue: 14}) {
+            sum += game.id;
+        }
     }
+    println!("{sum}");
 }

@@ -10,26 +10,12 @@ fn get_calibration_value_part2(s: &str) -> u32 {
             digits.push(d);
         } else {
             // or it is a digit spelled out as a string
-            if substr.starts_with("one") {
-                digits.push(1);
-            } else if substr.starts_with("two") {
-                digits.push(2);
-            } else if substr.starts_with("three") {
-                digits.push(3);
-            } else if substr.starts_with("four") {
-                digits.push(4);
-            } else if substr.starts_with("five") {
-                digits.push(5);
-            } else if substr.starts_with("six") {
-                digits.push(6);
-            } else if substr.starts_with("seven") {
-                digits.push(7);
-            } else if substr.starts_with("eight") {
-                digits.push(8);
-            } else if substr.starts_with("nine") {
-                digits.push(9);
-            } else if substr.starts_with("zero") {
-                digits.push(0);
+            let digit_text = vec!["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+            for (i, text) in digit_text.iter().enumerate() {
+                if substr.starts_with(text) {
+                    digits.push(i as u32);
+                    break;
+                }
             }
         }
     }

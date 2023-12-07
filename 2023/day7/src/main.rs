@@ -1,9 +1,10 @@
 use itertools::Itertools;
 use std::{collections::HashMap, io::stdin, str::FromStr};
 
-#[derive(Eq, PartialEq, Ord, PartialOrd, Debug, Hash)]
+#[derive(Eq, PartialEq, Ord, PartialOrd, Debug, Hash, Clone, Copy)]
 enum Card {
-    One = 1,
+    Joker = 0,
+    One,
     Two,
     Three,
     Four,
@@ -13,7 +14,6 @@ enum Card {
     Eight,
     Nine,
     Ten,
-    Jack,
     Queen,
     King,
     Ace,
@@ -30,7 +30,7 @@ enum HandType {
     FiveKind,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 struct Hand {
     cards: [Card; 5],
     bid: u32,
@@ -50,7 +50,7 @@ impl Hand {
                 '8' => Card::Eight,
                 '9' => Card::Nine,
                 'T' => Card::Ten,
-                'J' => Card::Jack,
+                'J' => Card::Joker,
                 'Q' => Card::Queen,
                 'K' => Card::King,
                 'A' => Card::Ace,
@@ -60,7 +60,7 @@ impl Hand {
         }
     }
 
-    fn calc_type(&self) -> HandType {
+    fn card_freqs(&self) -> HashMap<&Card, u8> {
         let mut m: HashMap<&Card, u8> = HashMap::new();
         for c in &self.cards[..] {
             match m.get(&c) {
@@ -72,7 +72,12 @@ impl Hand {
                 }
             }
         }
-        let sorted = m
+        m
+    }
+
+    fn calc_type_simple(&self) -> HandType {
+        let sorted = &self
+            .card_freqs()
             .into_iter()
             .sorted_by(|(_, a), (_, b)| b.cmp(a))
             .collect_vec();
@@ -96,6 +101,28 @@ impl Hand {
             }
             _ => panic!("Invalid number of cards"),
         }
+    }
+
+    fn calc_type(&self) -> HandType {
+        let mut hand: Hand = self.clone();
+        let sorted = &self
+            .card_freqs()
+            .into_iter()
+            .sorted_by(|(_, a), (_, b)| b.cmp(a))
+            .collect_vec();
+        let mut replace = sorted.get(0).unwrap().0;
+        if replace == &Card::Joker {
+            replace = match sorted.get(1) {
+                None => &Card::Ace,
+                Some((c, _)) => c,
+            }
+        }
+        for i in 0..hand.cards.len() {
+            if hand.cards[i] == Card::Joker {
+                hand.cards[i] = replace.clone();
+            }
+        }
+        hand.calc_type_simple()
     }
 }
 

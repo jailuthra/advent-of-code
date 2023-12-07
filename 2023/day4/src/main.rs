@@ -27,9 +27,29 @@ impl FromStr for Card {
     }
 }
 
-fn main() {
-    for line in stdin().lines() {
-        let card = Card::from_str(&line.unwrap());
-        println!("{:?}", card);
+impl Card {
+    fn score(&self) -> u64 {
+        let mut found = 0u64;
+        for w in &self.winning[..] {
+            found += match self.ours.iter().find(|o| *o == w) {
+                Some(_) => 1,
+                None => 0,
+            }
+        }
+        if found > 0 {
+            1 << (found - 1)
+        } else {
+            0
+        }
     }
+}
+
+fn main() {
+    let mut score = 0u64;
+    for line in stdin().lines() {
+        let card = Card::from_str(&line.unwrap()).unwrap();
+        println!("{:?} score {}", card, card.score());
+        score += card.score();
+    }
+    println!("{score}");
 }

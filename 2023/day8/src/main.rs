@@ -1,4 +1,5 @@
 use itertools::Itertools;
+use num::integer::lcm;
 use std::{collections::HashMap, io::stdin};
 
 #[derive(Debug, Copy, Clone)]
@@ -43,17 +44,27 @@ fn main() {
     }
     println!("{:?}", map);
 
-    // Part 1
-    let mut pos = "AAA";
-    let mut steps = 0;
-    for &i in instructions.iter().cycle() {
-        if pos == "ZZZ" {
-            break;
+    // Part 2
+    // For Part 1 replace A with AAA and Z with ZZZ :)
+    let pos = map.keys().filter(|k| k.ends_with("A")).collect_vec();
+    let mut total_steps: Vec<u64> = Vec::new();
+    for p in pos {
+        let mut steps = 0;
+        let mut pos = &p.clone();
+        for &i in instructions.iter().cycle() {
+            if pos.ends_with("Z") {
+                break;
+            }
+            print!("Current {:?} Instruction {:?} ", pos, i);
+            pos = &map.get(pos).unwrap()[i as usize];
+            println!("Next {:?}", pos);
+            steps += 1;
         }
-        print!("Current {} Instruction {:?} ", pos, i);
-        pos = &map.get(pos).unwrap()[i as usize];
-        println!("Next {}", pos);
-        steps += 1;
+        println!("Steps taken for {} -> {} {}", p, pos, steps);
+        total_steps.push(steps);
     }
-    println!("Steps taken {}", steps);
+    println!(
+        "Total steps taken will be {}",
+        total_steps.into_iter().reduce(lcm).unwrap()
+    );
 }

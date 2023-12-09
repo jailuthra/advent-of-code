@@ -23,6 +23,7 @@ fn extrapolate(history: &Vec<i32>) -> i32 {
 
 fn main() {
     let mut sum = 0;
+    let mut reverse_sum = 0;
     for line in stdin().lines() {
         let history = line
             .unwrap()
@@ -32,6 +33,11 @@ fn main() {
         let e = extrapolate(&history);
         sum += e;
         println!("{:?}, extrapolation {}", history, e);
+        let history: Vec<i32> = history.into_iter().rev().collect();
+        let e = extrapolate(&history);
+        println!("Reverse {:?}, extrapolation {}", history, e);
+        reverse_sum += e;
     }
     println!("SUM: {sum}");
+    println!("REVERSE SUM: {reverse_sum}");
 }

@@ -119,6 +119,35 @@ fn convert_graph(vec: &Vec<Vec<Node>>) -> HashMap<&Node, Vec<&Node>> {
     graph
 }
 
+fn find_loop<'a>(graph: &'a HashMap<&Node, Vec<&Node>>, current: &'a Node) -> Vec<&'a Node> {
+    let mut chain = Vec::new();
+    let mut visited = HashMap::new();
+    // add current node to loop
+    chain.push(current);
+    visited.insert(current, true);
+
+    // pick neighbour
+    let mut current = *graph.get(current).unwrap().get(0).unwrap();
+    loop {
+        // add neighbour to loop
+        chain.push(current);
+        visited.insert(current, true);
+        //println!("Current Node {:?}", current);
+        //println!("\tChain: {:?}", chain);
+        // find next neighbour that is not already visited
+        match graph
+            .get(current)
+            .unwrap()
+            .iter()
+            .find(|&x| x.pos != current.pos && !visited.contains_key(x))
+        {
+            None => break,
+            Some(x) => current = x,
+        }
+    }
+    chain
+}
+
 fn main() {
     let mut graph: Vec<Vec<Node>> = Vec::new();
     for (i, line) in stdin().lines().enumerate() {
@@ -141,5 +170,7 @@ fn main() {
     }
     let graph = convert_graph(&graph);
     let start = *graph.keys().find(|&x| x.pipe == Some(Pipe::Start)).unwrap();
-    println!("Start: {:?}", graph.get(start));
+    //println!("Start: {:?}", graph.get(start));
+    let chain = find_loop(&graph, start);
+    println!("Length/2: {}", chain.len() / 2);
 }
